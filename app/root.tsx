@@ -18,7 +18,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <main className="max-w-6xl mx-auto py-5">
+          <Outlet />
+        </main>
         <ScrollRestoration />
         <LiveReload />
         <Scripts />
