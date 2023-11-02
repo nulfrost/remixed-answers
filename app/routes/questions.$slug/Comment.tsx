@@ -1,6 +1,13 @@
 import { UserAvatar } from "./UserAvatar";
 
-export function Comment() {
+interface CommentProps {
+  avatar_url: string;
+  username: string;
+  body: string;
+  created_at: string;
+}
+
+export function Comment(props: CommentProps) {
   return (
     <div className="border-gray-200 p-4 first-of-type:rounded-tr-md first-of-type:rounded-tl-md last-of-type:border-b last-of-type:rounded-br-md last-of-type:rounded-bl-md">
       <header className="flex items-center gap-2 mb-4">

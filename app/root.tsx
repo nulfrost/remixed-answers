@@ -17,7 +17,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-gray-50">
         <main className="max-w-6xl mx-auto py-5">
           <Outlet />
         </main>
