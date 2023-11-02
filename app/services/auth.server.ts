@@ -10,5 +10,7 @@ authenticator.use(
     const password = form.get("password");
 
     console.log({ username, password });
+
+    return username;
   })
 );

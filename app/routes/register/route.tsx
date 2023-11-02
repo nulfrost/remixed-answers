@@ -1,6 +1,6 @@
-import { conform, useForm } from "@conform-to/react";
+import { useForm } from "@conform-to/react";
 import { parse } from "@conform-to/zod";
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, MetaFunction, json } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
@@ -8,16 +8,31 @@ import { ErrorMessage } from "~/components/ErrorMessage";
 import { Input } from "~/components/Input";
 import { authenticator } from "~/services/auth.server";
 
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remixed Answers | Register" },
+    { property: "og:title", content: "Remixed Answers | Register" },
+    {
+      property: "og:description",
+      content: "Log in to your Remixed Answers account",
+    },
+    { name: "description", content: "Log in to your Remixed Answers account " },
+  ];
+};
+
 const RegisterSchema = z
   .object({
     username: z
       .string({ required_error: "Please enter a username" })
-      .min(10, "Username must be at least 10 characters")
+      .min(5, "Username must be at least 10 characters")
       .max(20, "Username cannot exceed 20 characters"),
+    email: z.string({ required_error: "Please enter an e-mail" }).email(),
     password: z
       .string({ required_error: "Please enter a password" })
       .min(10, "Password must be at least 10 characters"),
-    confirmPassword: z.string(),
+    confirmPassword: z.string({
+      required_error: "Please confirm your password",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -35,21 +50,21 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   return await authenticator.authenticate("form", request, {
-    successRedirect: "/",
-    failureRedirect: "/login",
+    successRedirect: "/login",
+    failureRedirect: "/register",
     context: { formData },
   });
 }
 
 export default function Register() {
   const lastSubmission = useActionData<typeof action>();
-  const [form, { username, password, confirmPassword }] = useForm({
+  const [form, { username, password, confirmPassword, email }] = useForm({
     lastSubmission,
   });
 
   return (
     <div className="max-w-sm mx-auto mt-24">
-      <h1 className="font-bold text-3xl text-center mb-2">Remix Answers</h1>
+      <h1 className="font-bold text-3xl text-center mb-2">Remixed Answers</h1>
       <p className="text-sm text-gray-500 text-center mb-10">
         No account? No problem! Register below.
       </p>
@@ -59,7 +74,7 @@ export default function Register() {
           id="usernameLabel"
           className="text-gray-500 block mb-1"
         >
-          Username
+          Username (required)
         </label>
         {username.error && (
           <ErrorMessage message={{ id: username.id, error: username.error }} />
@@ -71,9 +86,8 @@ export default function Register() {
             id="username"
             required
             autoFocus
-            minLength={10}
+            minLength={5}
             maxLength={20}
-            autoComplete="username"
             aria-required
             aria-invalid={username.error ? "true" : undefined}
             aria-describedby={
@@ -87,11 +101,32 @@ export default function Register() {
           </span>
         </span>
         <label
+          htmlFor="username"
+          id="usernameLabel"
+          className="text-gray-500 block mb-1"
+        >
+          E-mail (required)
+        </label>
+        {email.error && (
+          <ErrorMessage message={{ id: email.id, error: email.error }} />
+        )}
+        <Input
+          type="email"
+          name="email"
+          id="email"
+          className="mb-4"
+          required
+          aria-required
+          aria-invalid={email.error ? "true" : undefined}
+          aria-describedby={email.error ? `${email.id}-error` : undefined}
+          aria-labelledby="usernameLabel usernameDesc"
+        />
+        <label
           htmlFor="password"
           id="passwordLabel"
           className="text-gray-500 block mb-1"
         >
-          Password
+          Password (required)
         </label>
         {password.error && (
           <ErrorMessage message={{ id: password.id, error: password.error }} />
@@ -110,7 +145,7 @@ export default function Register() {
             }
             aria-labelledby="passwordLabel passwordDesc"
           />
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500" id="passwordDesc">
             Password must be at least 10 characters long.
           </span>
         </span>
@@ -119,7 +154,7 @@ export default function Register() {
           id="confirmPasswordLabel"
           className="text-gray-500 block mb-1"
         >
-          Confirm Password
+          Confirm Password (required)
         </label>
         {confirmPassword.error && (
           <ErrorMessage
@@ -140,7 +175,7 @@ export default function Register() {
             }
             aria-labelledby="confirmPasswordLabel confirmPasswordDesc"
           />
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500" id="confirmPasswordDesc">
             Confirm your password, enter the same password as you did in the
             previous input.
           </span>
