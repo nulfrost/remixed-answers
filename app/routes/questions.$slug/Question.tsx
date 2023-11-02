@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import * as Avatar from "@radix-ui/react-avatar";
+import { UserAvatar } from "./UserAvatar";
 
 interface QuestionProps {
   author: string;
@@ -14,12 +14,10 @@ export default function Question(props: QuestionProps) {
   return (
     <div className="border border-gray-200 px-8 py-6 rounded-md shadow-sm mb-4">
       <div className="flex items-center gap-2 mb-2">
-        <Avatar.Root className="h-[50px] w-[50px] rounded-full inline-flex border-2 border-gray-200">
-          <Avatar.Image
-            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-            className="h-full w-full object-cover rounded-[inherit]"
-          />
-        </Avatar.Root>
+        <UserAvatar
+          size="50"
+          src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+        />
         <div>
           <span className="font-semibold">Dane</span>
           <p className="text-sm text-gray-500">
