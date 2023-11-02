@@ -47,8 +47,6 @@ export default function Register() {
     lastSubmission,
   });
 
-  console.log({ username, password, confirmPassword });
-
   return (
     <div className="max-w-sm mx-auto mt-24">
       <h1 className="font-bold text-3xl text-center mb-2">Remix Answers</h1>
@@ -136,9 +134,9 @@ export default function Register() {
             id="confirmPassword"
             required
             aria-required
-            aria-invalid={password.error ? "true" : undefined}
+            aria-invalid={confirmPassword.error ? "true" : undefined}
             aria-describedby={
-              password.error ? `${password.id}-error` : undefined
+              confirmPassword.error ? `${confirmPassword.id}-error` : undefined
             }
             aria-labelledby="confirmPasswordLabel confirmPasswordDesc"
           />
