@@ -8,5 +8,7 @@ authenticator.use(
   new FormStrategy(async ({ form }) => {
     const username = form.get("username");
     const password = form.get("password");
+
+    console.log({ username, password });
   })
 );
