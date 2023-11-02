@@ -23,7 +23,7 @@ export default function Index() {
         </button>
       </Form>
       <div className="[&>*]:border [&>*]:border-b-0">
-        {Array.from({ length: 6 }, (_, index) => (
+        {Array.from({ length: 12 }, (_, index) => (
           <div
             key={index}
             className="border-gray-200 p-4 first-of-type:rounded-tr-md first-of-type:rounded-tl-md last-of-type:border-b last-of-type:rounded-br-md last-of-type:rounded-bl-md"
