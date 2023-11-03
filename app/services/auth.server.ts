@@ -44,3 +44,9 @@ async function verifyLogin(username: string, password: string) {
     email: user[0].email,
   };
 }
+
+export async function authenticate(request: Request) {
+  await authenticator.isAuthenticated(request, {
+    successRedirect: "/",
+  });
+}

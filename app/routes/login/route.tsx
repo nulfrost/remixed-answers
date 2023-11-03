@@ -1,13 +1,14 @@
 import {
   ActionFunctionArgs,
   json,
+  LoaderFunctionArgs,
   MetaFunction,
   redirect,
 } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
-import { authenticator } from "~/services/auth.server";
+import { authenticate, authenticator } from "~/services/auth.server";
 import { AuthorizationError } from "remix-auth";
 import { commitSession, getSession } from "~/services/session.server";
 import { ErrorMessage } from "~/components/ErrorMessage";
@@ -44,6 +45,11 @@ export async function action({ request }: ActionFunctionArgs) {
       "Set-Cookie": await commitSession(cookieSession),
     },
   });
+}
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  await authenticate(request);
+  return null;
 }
 
 export default function Login() {

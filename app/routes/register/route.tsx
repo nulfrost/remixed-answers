@@ -2,6 +2,7 @@ import { useForm } from "@conform-to/react";
 import { parse, refine } from "@conform-to/zod";
 import {
   ActionFunctionArgs,
+  LoaderFunctionArgs,
   MetaFunction,
   json,
   redirect,
@@ -16,6 +17,7 @@ import {
   checkIfEmailExists,
   checkIfUsernameExists,
 } from "./register";
+import { authenticate } from "~/services/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -99,6 +101,11 @@ export async function action({ request }: ActionFunctionArgs) {
   await registerUser(submission.payload);
 
   return redirect("/login");
+}
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  await authenticate(request);
+  return null;
 }
 
 export default function Register() {
