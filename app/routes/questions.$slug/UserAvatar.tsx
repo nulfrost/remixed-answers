@@ -1,14 +1,18 @@
 import * as Avatar from "@radix-ui/react-avatar";
+import cx from "classnames";
 
 interface UserAvatarProps {
-  size: string;
+  className: string;
   src: string;
 }
 
 export function UserAvatar(props: UserAvatarProps) {
   return (
     <Avatar.Root
-      className={`h-[${props.size}px] w-[${props.size}px] rounded-full inline-flex border-2 border-gray-200`}
+      className={cx(
+        `rounded-full inline-flex border-2 border-gray-200`,
+        props.className
+      )}
     >
       <Avatar.Image
         src={props.src}

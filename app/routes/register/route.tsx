@@ -23,9 +23,9 @@ export const meta: MetaFunction = () => {
     { property: "og:title", content: "Remixed Answers | Register" },
     {
       property: "og:description",
-      content: "Log in to your Remixed Answers account",
+      content: "Create a new Remixed Answers account",
     },
-    { name: "description", content: "Log in to your Remixed Answers account " },
+    { name: "description", content: "Create a new Remixed Answers account" },
   ];
 };
 

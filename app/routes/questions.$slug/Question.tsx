@@ -15,7 +15,7 @@ export default function Question(props: QuestionProps) {
     <div className="border border-gray-200 px-8 py-6 rounded-md shadow-sm mb-4">
       <div className="flex items-center gap-2 mb-2">
         <UserAvatar
-          size="50"
+          className="h-14 w-14"
           src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
         />
         <div>
