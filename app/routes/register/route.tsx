@@ -1,12 +1,17 @@
 import { useForm } from "@conform-to/react";
-import { parse } from "@conform-to/zod";
-import { ActionFunctionArgs, MetaFunction, json } from "@remix-run/node";
+import { parse, refine } from "@conform-to/zod";
+import {
+  ActionFunctionArgs,
+  MetaFunction,
+  json,
+  redirect,
+} from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { Input } from "~/components/Input";
-import { authenticator } from "~/services/auth.server";
+import { registerUser, checkIfUserEmailExists } from "./register";
 
 export const meta: MetaFunction = () => {
   return [
@@ -20,40 +25,93 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const RegisterSchema = z
-  .object({
-    username: z
-      .string({ required_error: "Please enter a username" })
-      .min(5, "Username must be at least 10 characters")
-      .max(20, "Username cannot exceed 20 characters"),
-    email: z.string({ required_error: "Please enter an e-mail" }).email(),
-    password: z
-      .string({ required_error: "Please enter a password" })
-      .min(10, "Password must be at least 10 characters"),
-    confirmPassword: z.string({
-      required_error: "Please confirm your password",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+function createRegisterSchema(
+  intent: string,
+  constraint?: {
+    isEmailUnique?: (email: string) => Promise<boolean>;
+  }
+) {
+  return z
+    .object({
+      username: z
+        .string({ required_error: "Please enter a username" })
+        .min(5, "Username must be at least 10 characters")
+        .max(20, "Username cannot exceed 20 characters"),
+      email: z
+        .string({ required_error: "Please enter an e-mail" })
+        .email("E-mail is invalid")
+        .pipe(
+          z.string().superRefine((email, ctx) =>
+            refine(ctx, {
+              validate: () => constraint?.isEmailUnique?.(email),
+              when: intent === "submit" || intent === "validate/email",
+              message: "User with this e-mail already exists",
+            })
+          )
+        ),
+      password: z
+        .string({ required_error: "Please enter a password" })
+        .min(10, "Password must be at least 10 characters"),
+      confirmPassword: z.string({
+        required_error: "Please confirm your password",
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
+}
+
+// const RegisterSchema = z
+//   .object({
+//     username: z
+//       .string({ required_error: "Please enter a username" })
+//       .min(5, "Username must be at least 10 characters")
+//       .max(20, "Username cannot exceed 20 characters"),
+//     email: z
+//       .string({ required_error: "Please enter an e-mail" })
+//       .email("E-mail is invalid")
+//       .pipe(
+//         z.string().superRefine((email, ctx) =>
+//           refine(ctx, {
+//             when: intent === "submit" || intent === "validate/field",
+//             validate: () => checkIfUserEmailExists(email),
+//             message: "User with this e-mail already exists",
+//           })
+//         )
+//       ),
+//     password: z
+//       .string({ required_error: "Please enter a password" })
+//       .min(10, "Password must be at least 10 characters"),
+//     confirmPassword: z.string({
+//       required_error: "Please confirm your password",
+//     }),
+//   })
+//   .refine((data) => data.password === data.confirmPassword, {
+//     message: "Passwords do not match",
+//     path: ["confirmPassword"],
+//   });
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const submission = parse(formData, {
-    schema: RegisterSchema,
+  const submission = await parse(formData, {
+    schema: (intent) => {
+      return createRegisterSchema(intent, {
+        isEmailUnique(email: string) {
+          return checkIfUserEmailExists(email);
+        },
+      });
+    },
+    async: true,
   });
 
   if (submission.intent !== "submit" || !submission.value) {
     return json(submission);
   }
 
-  return await authenticator.authenticate("form", request, {
-    successRedirect: "/login",
-    failureRedirect: "/register",
-    context: { formData },
-  });
+  await registerUser(submission.payload);
+
+  return redirect("/login");
 }
 
 export default function Register() {
@@ -68,7 +126,7 @@ export default function Register() {
       <p className="text-sm text-gray-500 text-center mb-10">
         No account? No problem! Register below.
       </p>
-      <Form method="post" {...form.props}>
+      <Form method="post" {...form.props} replace>
         <label
           htmlFor="username"
           id="usernameLabel"

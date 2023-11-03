@@ -7,6 +7,8 @@
     "build": "vite build && vite build --ssr",
     "dev": "vite dev",
     "start": "remix-serve ./build/index.js",
+    "db:push": "drizzle-kit push:pg",
+    "db:generate": "drizzle-kit generate:pg",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -22,6 +24,7 @@
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.6",
     "isbot": "^3.6.8",
+    "pg": "^8.11.3",
     "postgres": "^3.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

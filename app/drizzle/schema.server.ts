@@ -62,6 +62,10 @@ export const answersRelations = relations(answers, ({ one }) => ({
     fields: [answers.questionId],
     references: [questions.id],
   }),
+  author: one(users, {
+    fields: [answers.userId],
+    references: [users.id],
+  }),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
