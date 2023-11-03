@@ -11,7 +11,11 @@ import { z } from "zod";
 import { Button } from "~/components/Button";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { Input } from "~/components/Input";
-import { registerUser, checkIfUserEmailExists } from "./register";
+import {
+  registerUser,
+  checkIfEmailExists,
+  checkIfUsernameExists,
+} from "./register";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,6 +33,7 @@ function createRegisterSchema(
   intent: string,
   constraint?: {
     isEmailUnique?: (email: string) => Promise<boolean>;
+    isUsernameUnique?: (username: string) => Promise<boolean>;
   }
 ) {
   return z
@@ -36,7 +41,16 @@ function createRegisterSchema(
       username: z
         .string({ required_error: "Please enter a username" })
         .min(5, "Username must be at least 10 characters")
-        .max(20, "Username cannot exceed 20 characters"),
+        .max(20, "Username cannot exceed 20 characters")
+        .pipe(
+          z.string().superRefine((username, ctx) =>
+            refine(ctx, {
+              validate: () => constraint?.isUsernameUnique?.(username),
+              when: intent === "submit" || intent === "validate/username",
+              message: "User with this username already exists",
+            })
+          )
+        ),
       email: z
         .string({ required_error: "Please enter an e-mail" })
         .email("E-mail is invalid")
@@ -62,43 +76,16 @@ function createRegisterSchema(
     });
 }
 
-// const RegisterSchema = z
-//   .object({
-//     username: z
-//       .string({ required_error: "Please enter a username" })
-//       .min(5, "Username must be at least 10 characters")
-//       .max(20, "Username cannot exceed 20 characters"),
-//     email: z
-//       .string({ required_error: "Please enter an e-mail" })
-//       .email("E-mail is invalid")
-//       .pipe(
-//         z.string().superRefine((email, ctx) =>
-//           refine(ctx, {
-//             when: intent === "submit" || intent === "validate/field",
-//             validate: () => checkIfUserEmailExists(email),
-//             message: "User with this e-mail already exists",
-//           })
-//         )
-//       ),
-//     password: z
-//       .string({ required_error: "Please enter a password" })
-//       .min(10, "Password must be at least 10 characters"),
-//     confirmPassword: z.string({
-//       required_error: "Please confirm your password",
-//     }),
-//   })
-//   .refine((data) => data.password === data.confirmPassword, {
-//     message: "Passwords do not match",
-//     path: ["confirmPassword"],
-//   });
-
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const submission = await parse(formData, {
     schema: (intent) => {
       return createRegisterSchema(intent, {
         isEmailUnique(email: string) {
-          return checkIfUserEmailExists(email);
+          return checkIfEmailExists(email);
+        },
+        isUsernameUnique(username: string) {
+          return checkIfUsernameExists(username);
         },
       });
     },

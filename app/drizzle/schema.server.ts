@@ -14,16 +14,16 @@ export const users = pgTable("users", {
     .$defaultFn(() => createId())
     .primaryKey()
     .notNull(),
-  username: text("username"),
-  email: text("email"),
-  password: text("password"),
+  username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
   created_at: timestamp("created_at").defaultNow(),
 });
 
 export const questions = pgTable("questions", {
   id: serial("id").notNull().primaryKey(),
-  title: text("title"),
-  body: text("body"),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
   userId: text("user_id").notNull(),
@@ -32,7 +32,7 @@ export const questions = pgTable("questions", {
 
 export const answers = pgTable("answers", {
   id: serial("id").notNull().primaryKey(),
-  content: text("content"),
+  content: text("content").notNull(),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
   questionId: integer("question_id").notNull(),
