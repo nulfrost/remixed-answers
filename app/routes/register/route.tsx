@@ -7,7 +7,13 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import { Form, Link, useActionData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useFormAction,
+  useNavigation,
+} from "@remix-run/react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { ErrorMessage } from "~/components/ErrorMessage";
@@ -113,6 +119,12 @@ export default function Register() {
   const [form, { username, password, confirmPassword, email }] = useForm({
     lastSubmission,
   });
+
+  const navigation = useNavigation();
+  const formAction = useFormAction();
+
+  const isSubmitting =
+    navigation.state === "submitting" || navigation.formAction === formAction;
 
   return (
     <div className="max-w-sm mx-auto mt-24">
@@ -238,8 +250,16 @@ export default function Register() {
         >
           Already have an account? Log in here.
         </Link>
-        <Button className="w-full py-2" type="submit">
-          Register Account
+        <Button
+          className={`w-full py-2 ${
+            isSubmitting
+              ? "bg-indigo-300 cursor-not-allowed hover:bg-indigo-300"
+              : ""
+          }`}
+          disabled={isSubmitting}
+          type="submit"
+        >
+          {isSubmitting ? "Registering your account..." : "Register Account"}
         </Button>
       </Form>
     </div>

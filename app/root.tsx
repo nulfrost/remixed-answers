@@ -91,6 +91,7 @@ function Navbar(props: NavbarProps) {
           <Link
             to="/login"
             className="hover:underline font-bold text-indigo-500"
+            aria-label="Go to login page"
           >
             Login
           </Link>
