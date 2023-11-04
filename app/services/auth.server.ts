@@ -6,9 +6,14 @@ import { db } from "~/drizzle/config.server";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
-export let authenticator = new Authenticator(sessionStorage, {
-  sessionKey: "__session",
-});
+type User = typeof users.$inferInsert;
+
+export let authenticator = new Authenticator<Omit<User, "password">>(
+  sessionStorage,
+  {
+    sessionKey: "__session",
+  }
+);
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {

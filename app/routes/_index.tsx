@@ -1,12 +1,22 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, Form } from "@remix-run/react";
-import { authenticator } from "~/services/auth.server";
+import { Link, Form, MetaFunction } from "@remix-run/react";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await authenticator.isAuthenticated(request);
-  console.log(user);
-  return null;
-}
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remixed Answers | Search through thousands of questions" },
+    {
+      property: "og:title",
+      content: "Remixed Answers | Search through thousands of questions",
+    },
+    {
+      property: "og:description",
+      content: "Start a conversation or find questions to answer",
+    },
+    {
+      name: "description",
+      content: "Start a conversation or find questions to answer",
+    },
+  ];
+};
 
 export default function Index() {
   return (
@@ -32,34 +42,45 @@ export default function Index() {
       </Form>
       <div className="[&>*]:border [&>*]:border-b-0">
         {Array.from({ length: 12 }, (_, index) => (
-          <div
-            key={index}
-            className="border-gray-200 p-4 first-of-type:rounded-tr-md first-of-type:rounded-tl-md last-of-type:border-b last-of-type:rounded-br-md last-of-type:rounded-bl-md"
-          >
-            <header>
-              <h2 className="font-bold mb-2 text-lg">
-                <Link to="#" className="hover:underline">
-                  some title lol
-                </Link>
-              </h2>
-            </header>
-            <p className="text-gray-500 mb-2 text-sm">
-              can we make sure that the earth is actually flat and rotating? I
-              have my suspicions!
-            </p>
-            <footer className="text-xs text-gray-500">
-              <span>5 comments</span> &middot;{" "}
-              <Link
-                to="#"
-                className="text-blue-500 hover:underline hover:text-blue-600 duration-150"
-              >
-                Science
-              </Link>{" "}
-              &middot; <span>2 Weeks Ago</span>
-            </footer>
-          </div>
+          <Question />
         ))}
       </div>
+    </div>
+  );
+}
+
+interface QuestionProps {
+  title: string;
+  body: string;
+  comment_count: number;
+  category: string;
+  created_at: string;
+}
+
+function Question(props: QuestionProps) {
+  return (
+    <div className="border-gray-200 p-4 first-of-type:rounded-tr-md first-of-type:rounded-tl-md last-of-type:border-b last-of-type:rounded-br-md last-of-type:rounded-bl-md bg-white">
+      <header>
+        <h2 className="font-bold mb-2 text-lg">
+          <Link to="#" className="hover:underline">
+            some title lol
+          </Link>
+        </h2>
+      </header>
+      <p className="text-gray-500 mb-2 text-sm">
+        can we make sure that the earth is actually flat and rotating? I have my
+        suspicions!
+      </p>
+      <footer className="text-xs text-gray-500">
+        <span>5 comments</span> &middot;{" "}
+        <Link
+          to="#"
+          className="text-blue-500 hover:underline hover:text-blue-600 duration-150"
+        >
+          Science
+        </Link>{" "}
+        &middot; <span>2 Weeks Ago</span>
+      </footer>
     </div>
   );
 }

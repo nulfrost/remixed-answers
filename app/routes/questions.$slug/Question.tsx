@@ -12,12 +12,9 @@ interface QuestionProps {
 
 export default function Question(props: QuestionProps) {
   return (
-    <div className="border border-gray-200 px-8 py-6 rounded-md shadow-sm mb-4">
+    <div className="border border-gray-200 px-8 py-6 rounded-md shadow-sm mb-4 bg-white">
       <div className="flex items-center gap-2 mb-2">
-        <UserAvatar
-          className="h-14 w-14"
-          src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-        />
+        <UserAvatar className="h-14 w-14" initial="D" />
         <div>
           <span className="font-semibold">Dane</span>
           <p className="text-sm text-gray-500">
