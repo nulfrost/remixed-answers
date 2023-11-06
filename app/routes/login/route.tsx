@@ -10,6 +10,7 @@ import {
   Link,
   useActionData,
   useFormAction,
+  useLoaderData,
   useNavigation,
 } from "@remix-run/react";
 import { Button } from "~/components/Button";
@@ -18,6 +19,8 @@ import { authenticate, authenticator } from "~/services/auth.server";
 import { AuthorizationError } from "remix-auth";
 import { commitSession, getSession } from "~/services/session.server";
 import { ErrorMessage } from "~/components/ErrorMessage";
+import * as Toast from "@radix-ui/react-toast";
+import { useEffect, useState } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -55,13 +58,27 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await authenticate(request);
-  return null;
+  const session = await getSession(request.headers.get("Cookie"));
+  const toast = session.get("toast") || null;
+  return json(
+    { toast },
+    { headers: { "Set-Cookie": await commitSession(session) } }
+  );
 }
 
 export default function Login() {
   const actionData = useActionData<typeof action>();
+  const { toast } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const formAction = useFormAction();
+
+  useEffect(() => {
+    if (toast) {
+      setToastOpen(true);
+    }
+  }, []);
+
+  const [toastOpen, setToastOpen] = useState(false);
 
   const isSubmitting =
     navigation.state === "submitting" || navigation.formAction === formAction;
@@ -111,7 +128,7 @@ export default function Login() {
           <Button
             className={`w-full py-2 ${
               isSubmitting
-                ? "bg-indigo-300 cursor-not-allowed hover:bg-indigo-300"
+                ? "bg-indigo-200 cursor-not-allowed hover:bg-indigo-200"
                 : ""
             }`}
             disabled={isSubmitting}
@@ -120,6 +137,22 @@ export default function Login() {
           </Button>
         </fieldset>
       </Form>
+      <Toast.Provider swipeDirection="up">
+        <Toast.Root
+          open={toastOpen}
+          onOpenChange={setToastOpen}
+          duration={5000}
+          className="text-green-900 bg-green-50 rounded-md border border-green-200 py-2 px-3 text-center absolute top-10 w-[400px] duration-150 shadow-md [transform:translateX(-50%,-50%)]"
+        >
+          <Toast.Title className="font-semibold mb-1">{toast}</Toast.Title>
+          <Toast.Description>
+            Your account was successfully registered, log in to gain access to
+            Remixed Answers.
+          </Toast.Description>
+          <Toast.Action altText="Successfully registered your account." />
+        </Toast.Root>
+        <Toast.Viewport />
+      </Toast.Provider>
     </div>
   );
 }

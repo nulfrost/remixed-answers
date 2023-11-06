@@ -24,6 +24,7 @@ import {
   checkIfUsernameExists,
 } from "./register";
 import { authenticate } from "~/services/auth.server";
+import { commitSession, getSession } from "~/services/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -104,9 +105,20 @@ export async function action({ request }: ActionFunctionArgs) {
     return json(submission);
   }
 
-  await registerUser(submission.payload);
+  const session = await getSession(request.headers.get("Cookie"));
+  session.flash("toast", "Account Registered");
 
-  return redirect("/login");
+  await registerUser({
+    email: submission.value.email,
+    username: submission.value.username,
+    password: submission.value.password,
+  });
+
+  return redirect("/login", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -127,12 +139,12 @@ export default function Register() {
     navigation.state === "submitting" || navigation.formAction === formAction;
 
   return (
-    <div className="max-w-sm mx-auto mt-24">
+    <div className="max-w-sm mx-auto pt-2">
       <h1 className="font-bold text-3xl text-center mb-2">Remixed Answers</h1>
       <p className="text-sm text-gray-500 text-center mb-10">
         No account? No problem! Register below.
       </p>
-      <Form method="post" {...form.props} replace>
+      <Form method="post" {...form.props}>
         <label
           htmlFor="username"
           id="usernameLabel"
@@ -253,7 +265,7 @@ export default function Register() {
         <Button
           className={`w-full py-2 ${
             isSubmitting
-              ? "bg-indigo-300 cursor-not-allowed hover:bg-indigo-300"
+              ? "bg-indigo-200 cursor-not-allowed hover:bg-indigo-200"
               : ""
           }`}
           disabled={isSubmitting}

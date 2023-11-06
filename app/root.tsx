@@ -78,7 +78,11 @@ function Navbar(props: NavbarProps) {
                   <button
                     className="w-full text-left"
                     onClick={() =>
-                      submit(null, { method: "POST", action: "/logout" })
+                      submit(null, {
+                        method: "POST",
+                        action: "/logout",
+                        replace: true,
+                      })
                     }
                   >
                     Logout
