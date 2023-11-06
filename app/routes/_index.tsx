@@ -21,6 +21,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div>
+      <h1 className="font-bold text-3xl mb-2">Search</h1>
       <Form className="w-full flex gap-2 mb-4">
         <label htmlFor="search" className="sr-only">
           Search remixed answers

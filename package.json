@@ -9,6 +9,7 @@
     "start": "remix-serve ./build/index.js",
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
+    "icons": "ts-node-esm build-icons.ts",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -45,8 +46,11 @@
     "autoprefixer": "^10.4.16",
     "drizzle-kit": "^0.19.13",
     "eslint": "^8.38.0",
+    "glob": "^10.3.10",
+    "node-html-parser": "^6.1.11",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
+    "ts-node": "^10.9.1",
     "typescript": "^5.1.6",
     "unplugin-icons": "^0.17.1",
     "vite": "^4.5.0",
