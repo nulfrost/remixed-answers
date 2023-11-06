@@ -1,5 +1,5 @@
 import { type SVGProps } from "react";
-import spriteHref from "~/app/components/icons/sprite.svg";
+import spriteHref from "~/icons/sprite.svg";
 import { type IconName } from "~/icons/names";
 
 export function Icon({
