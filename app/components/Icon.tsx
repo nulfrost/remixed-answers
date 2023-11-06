@@ -1,10 +1,12 @@
 import { type SVGProps } from "react";
 import spriteHref from "~/app/components/icons/sprite.svg";
+import { type IconName } from "~/icons/names";
+
 export function Icon({
   name,
   ...props
 }: SVGProps<SVGSVGElement> & {
-  name: string;
+  name: IconName;
 }) {
   return (
     <svg {...props}>
