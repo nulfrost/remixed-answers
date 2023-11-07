@@ -17,7 +17,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  created_at: timestamp("created_at").defaultNow(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const questions = pgTable("questions", {

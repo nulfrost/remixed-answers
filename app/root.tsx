@@ -18,11 +18,11 @@ import { UserAvatar } from "./routes/questions.$slug/UserAvatar";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  return json({ user });
+  return json(user);
 }
 
 export default function App() {
-  const { user } = useLoaderData<typeof loader>();
+  const user = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -45,13 +45,11 @@ export default function App() {
 }
 
 interface NavbarProps {
-  user: {
-    username?: string;
-    email?: string;
-  };
+  id: string;
+  username: string;
 }
 
-function Navbar(props: NavbarProps) {
+function Navbar(props: NavbarProps | null) {
   const submit = useSubmit();
 
   return (

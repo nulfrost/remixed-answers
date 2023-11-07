@@ -6,14 +6,14 @@ import { db } from "~/drizzle/config.server";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
-type User = typeof users.$inferInsert;
+type User = Omit<
+  typeof users.$inferInsert,
+  "password" | "created_at" | "email"
+>;
 
-export let authenticator = new Authenticator<Omit<User, "password">>(
-  sessionStorage,
-  {
-    sessionKey: "__session",
-  }
-);
+export let authenticator = new Authenticator<User>(sessionStorage, {
+  sessionKey: "__session",
+});
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {
@@ -32,9 +32,8 @@ authenticator.use(
 async function verifyLogin(username: string, password: string) {
   const user = await db
     .select({
+      id: users.id,
       username: users.username,
-      created_at: users.created_at,
-      email: users.email,
       password: users.password,
     })
     .from(users)
@@ -44,9 +43,8 @@ async function verifyLogin(username: string, password: string) {
   if (!isPasswordValid) return null;
 
   return {
+    id: user[0].id,
     username: user[0].username,
-    created_at: user[0].created_at,
-    email: user[0].email,
   };
 }
 
