@@ -2,6 +2,7 @@
   "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -16,7 +17,6 @@
     "paths": {
       "~/*": ["./app/*"]
     },
-    "types": ["unplugin-icons/types/react"],
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true

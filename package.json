@@ -9,6 +9,7 @@
     "start": "remix-serve ./build/index.js",
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
+    "db:seed": "ts-node-esm ./app/drizzle/seed.ts",
     "icons": "ts-node-esm build-icons.ts",
     "typecheck": "tsc"
   },

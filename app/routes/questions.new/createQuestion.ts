@@ -11,6 +11,6 @@ export async function createQuestion(question: Question) {
     title: question.title,
     body: question.body,
     userId: question.userId,
-    categoryId: 2,
+    categoryId: question.categoryId,
   });
 }

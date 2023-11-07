@@ -51,5 +51,6 @@ async function verifyLogin(username: string, password: string) {
 export async function authenticate(request: Request) {
   await authenticator.isAuthenticated(request, {
     successRedirect: "/",
+    failureRedirect: "/",
   });
 }

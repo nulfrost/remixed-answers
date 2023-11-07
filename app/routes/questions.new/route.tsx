@@ -1,6 +1,11 @@
 import { useForm } from "@conform-to/react";
 import { parse } from "@conform-to/zod";
-import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  json,
+  redirect,
+} from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useId } from "react";
 import { z } from "zod";
@@ -9,6 +14,8 @@ import { ErrorMessage } from "~/components/ErrorMessage";
 import { Input } from "~/components/Input";
 import { useUser } from "~/hooks/useUser";
 import { authenticator } from "~/services/auth.server";
+import { CategorySelect } from "./CategorySelect";
+import { createQuestion } from "./createQuestion";
 
 const QuestionSchema = z.object({
   title: z
@@ -17,15 +24,22 @@ const QuestionSchema = z.object({
     .max(100, "Title must not exceed 100 characters"),
   body: z.string().max(5000, "Body cannot exceed 5000 characters").optional(),
   category: z.string(),
+  userId: z.string(),
 });
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const submission = parse(formData, { schema: QuestionSchema });
   if (submission.intent !== "submit" || !submission.value) {
-    return json(submission);
+    return json(submission, { status: 400 });
   }
-  return null;
+  await createQuestion({
+    title: submission.value.title,
+    body: submission.value.body ?? "",
+    categoryId: +submission.value.category,
+    userId: submission.value.userId,
+  });
+  return redirect("/");
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -39,7 +53,7 @@ export default function NewQuestion() {
   const lastSubmission = useActionData<typeof action>();
   const user = useUser();
   const id = useId();
-  const [form, { title }] = useForm({
+  const [form, { title, body, category }] = useForm({
     id,
     lastSubmission,
   });
@@ -58,6 +72,7 @@ export default function NewQuestion() {
         <Input
           type="text"
           className="mb-5"
+          name="title"
           autoFocus
           required
           id={title.id}
@@ -65,13 +80,22 @@ export default function NewQuestion() {
           aria-invalid={title.error ? "true" : undefined}
           aria-describedby={title.error ? `${title.id}-error` : undefined}
         />
-        <label htmlFor="body" className="mb-1 block text-gray-500">
+        <label htmlFor={body.id} className="mb-1 block text-gray-500">
           Body
         </label>
         <textarea
           className="block mb-4 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 resize-none"
           rows={10}
           maxLength={5000}
+        />
+        <label htmlFor={category.id} className="mb-1 text-gray-500 block">
+          Category (required)
+        </label>
+        <CategorySelect
+          required
+          aria-required
+          className="mb-4"
+          name="category"
         />
         <Button type="submit" className="w-full py-2">
           Ask Question
