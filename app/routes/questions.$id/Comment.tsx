@@ -1,9 +1,12 @@
 import { UserAvatar } from "./UserAvatar";
 
 interface CommentProps {
-  username: string;
-  body: string;
-  created_at: string;
+  id: number;
+  created_at: string | null;
+  content: string;
+  author: {
+    username: string;
+  };
 }
 
 export function Comment(props: CommentProps) {
@@ -13,14 +16,11 @@ export function Comment(props: CommentProps) {
         <header className="flex items-center gap-2 mb-4">
           <UserAvatar className="h-10 w-10" initial="D" />
           <div>
-            <h2 className="font-bold -mb-1">Dane</h2>
-            <span className="text-xs text-gray-500">2 Weeks Ago</span>
+            <h2 className="font-bold -mb-1">{props.author.username}</h2>
+            <span className="text-xs text-gray-500">{props.created_at}</span>
           </div>
         </header>
-        <p className="text-gray-500 mb-2 text-sm">
-          can we make sure that the earth is actually flat and rotating? I have
-          my suspicions!
-        </p>
+        <p className="text-gray-500 mb-2 text-sm">{props.content}</p>
       </article>
     </li>
   );

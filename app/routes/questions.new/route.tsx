@@ -3,6 +3,7 @@ import { parse } from "@conform-to/zod";
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
+  MetaFunction,
   json,
   redirect,
 } from "@remix-run/node";
@@ -31,6 +32,24 @@ const QuestionSchema = z.object({
   category: z.string(),
   userId: z.string(),
 });
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Remixed Answers | Ask a new question" },
+    {
+      property: "og:title",
+      content: "Remixed Answers | Ask a new question",
+    },
+    {
+      property: "og:description",
+      content: "What's on your mind? Get an answer from thousands of experts",
+    },
+    {
+      name: "description",
+      content: "What's on your mind? Get an answer from thousands of experts",
+    },
+  ];
+};
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();

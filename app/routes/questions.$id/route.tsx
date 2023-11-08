@@ -8,15 +8,31 @@ import {
 import { ChangeEvent } from "react";
 import { Comment } from "./Comment";
 import { getSingleQuestion } from "./getSingleQuestion";
-import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { zx } from "zodix";
-import { z } from "zod";
+import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [
+    { title: `Remixed Answers | ${data?.title}` },
+    {
+      property: "og:title",
+      content: `Remixed Answers | ${data?.title}`,
+    },
+    {
+      property: "og:description",
+      content: `${data?.body ? data.body : data?.title}`,
+    },
+    {
+      name: "description",
+      content: `${data?.body ? data.body : data?.title}`,
+    },
+  ];
+};
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  const { id } = zx.parseParams(params, {
-    id: z.number(),
-  });
-  const question = await getSingleQuestion(id);
+  // const { id } = zx.parseParams(params,
+  //   id: z.number(),
+  // });
+  const question = await getSingleQuestion(params.id as unknown as number);
   return json(question);
 }
 
@@ -33,7 +49,7 @@ export default function QuestionSlug() {
     <article>
       <QuestionCard {...question} />
       <section className="mb-4">
-        <p className="font-bold text-lg">13 Answers</p>
+        <p className="font-bold text-lg">{question.answers.length} Answers</p>
         <fetcher.Form
           action={(() => {
             let params = new URLSearchParams(location.search);
@@ -56,11 +72,17 @@ export default function QuestionSlug() {
             <option value="oldest">Oldest Answers</option>
           </select>
         </fetcher.Form>
-        <ul className="[&>*]:border [&>*]:border-b-0 max-w-[60ch]">
-          {Array.from({ length: 2 }, (_, index) => (
-            <Comment key={index} />
-          ))}
-        </ul>
+        {question.answers.length === 0 ? (
+          <p className="text-gray-500">
+            No one has left a comment yet, be the first to answer!
+          </p>
+        ) : (
+          <ul className="[&>*]:border [&>*]:border-b-0 max-w-[60ch]">
+            {question.answers.map((answer) => (
+              <Comment {...answer} />
+            ))}
+          </ul>
+        )}
       </section>
     </article>
   );

@@ -18,7 +18,7 @@ export function CategorySelect(props: ComponentProps<"select">) {
       )}
     >
       <>
-        <option disabled selected value>
+        <option disabled selected value="">
           Select a category
         </option>
         {categoryFetcher.data?.map((category) => (

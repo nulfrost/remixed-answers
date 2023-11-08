@@ -5,6 +5,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { Button } from "~/components/Button";
 import { formatDistanceToNow } from "date-fns";
+import { useUser } from "~/hooks/useUser";
 
 interface QuestionProps {
   author: {
@@ -21,6 +22,8 @@ interface QuestionProps {
 export default function Question(props: QuestionProps) {
   const [answerDialogOpen, setDialogAnswerOpen] = useState(false);
   const fetcher = useFetcher();
+  const user = useUser();
+  console.log(user);
   return (
     <header className="border border-gray-200 px-8 py-6 rounded-md mb-4 bg-white">
       <div className="flex flex-col">
@@ -42,7 +45,7 @@ export default function Question(props: QuestionProps) {
                 {props.category.name}
               </Link>{" "}
               &middot;{" "}
-              <time dateTime={props.created_at.toString()}>
+              <time dateTime={props.created_at?.toString()}>
                 {formatDistanceToNow(new Date(props.created_at as string), {
                   addSuffix: true,
                 })}
@@ -52,24 +55,33 @@ export default function Question(props: QuestionProps) {
         </div>
       </div>
       {props.body ? <p className="mb-4">{props.body}</p> : null}
-      <div className="flex gap-3">
-        <button
-          type="button"
-          className="bg-indigo-500 text-white px-4 py-1.5 rounded-full font-semibold hover:bg-indigo-600 duration-150 focus:border-indigo-600 focus:ring focus:ring-indigo-600 focus:ring-opacity-50 outline-none flex items-center gap-1"
-          onClick={() => setDialogAnswerOpen(true)}
+      {user ? (
+        <div className="flex gap-3">
+          <button
+            type="button"
+            className="bg-indigo-500 text-white px-4 py-1.5 rounded-full font-semibold hover:bg-indigo-600 duration-150 focus:border-indigo-600 focus:ring focus:ring-indigo-600 focus:ring-opacity-50 outline-none flex items-center gap-1"
+            onClick={() => setDialogAnswerOpen(true)}
+          >
+            <Icon name="message-circle" className="h-4 w-4" />
+            <span>Answer</span>
+          </button>
+          <button
+            aria-label="Save question to favourites"
+            type="button"
+            className="hover:bg-indigo-50 duration-150 px-4 py-1.5 rounded-md text-gray-500 hover:text-indigo-900 focus:bg-indigo-50 focus:text-indigo-900 flex gap-1 items-center"
+          >
+            <Icon name="bookmark" className="h-4 w-4" />
+            <span>Save</span>
+          </button>
+        </div>
+      ) : (
+        <Link
+          to="/login"
+          className="hover:underline text-indigo-500 hover:text-indigo-600"
         >
-          <Icon name="message-circle" className="h-4 w-4" />
-          <span>Answer</span>
-        </button>
-        <button
-          aria-label="Save question to favourites"
-          type="button"
-          className="hover:bg-indigo-50 duration-150 px-4 py-1.5 rounded-md text-gray-500 hover:text-indigo-900 focus:bg-indigo-50 focus:text-indigo-900 flex gap-1 items-center"
-        >
-          <Icon name="bookmark" className="h-4 w-4" />
-          <span>Save</span>
-        </button>
-      </div>
+          Log in to leave an answer &rarr;
+        </Link>
+      )}
       <Dialog.Root open={answerDialogOpen}>
         <Dialog.Trigger />
         <Dialog.Portal>

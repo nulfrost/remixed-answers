@@ -9,6 +9,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "target": "ES2022",
     "strict": true,
     "allowJs": true,
@@ -20,5 +21,6 @@
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
-  }
+  },
+  "exclude": ["node_modules"]
 }
