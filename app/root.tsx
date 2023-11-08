@@ -1,5 +1,4 @@
 import {
-  Form,
   Link,
   Links,
   LiveReload,
@@ -14,15 +13,15 @@ import "~/css/tailwind.css";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { authenticator } from "./services/auth.server";
-import { UserAvatar } from "./routes/questions.$slug/UserAvatar";
+import { UserAvatar } from "./routes/questions.$id/UserAvatar";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  return json(user);
+  return json({ user });
 }
 
 export default function App() {
-  const user = useLoaderData<typeof loader>();
+  const { user } = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -32,7 +31,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-gray-50">
-        <Navbar user={user} />
+        <Navbar {...user} />
         <main className="max-w-6xl mx-auto py-5">
           <Outlet />
         </main>
@@ -45,11 +44,11 @@ export default function App() {
 }
 
 interface NavbarProps {
-  id: string;
-  username: string;
+  id?: string;
+  username?: string;
 }
 
-function Navbar(props: NavbarProps | null) {
+function Navbar(props: NavbarProps) {
   const submit = useSubmit();
 
   return (
@@ -58,7 +57,7 @@ function Navbar(props: NavbarProps | null) {
         Remixed Answers
       </Link>
       <div className="flex items-center gap-4">
-        {props.user ? (
+        {props?.username ? (
           <>
             <Link
               to="/questions/new"
@@ -76,7 +75,7 @@ function Navbar(props: NavbarProps | null) {
                     disabled
                     className="text-gray-400 text-sm py-1.5"
                   >
-                    <span className="px-2">{props.user.username}</span>
+                    <span className="px-2">{props?.username}</span>
                   </DropdownMenu.Item>
                   <DropdownMenu.Separator className="h-[1px] bg-gray-200 m-[5px]" />
                   <DropdownMenu.Item className="text-gray-400 text-sm py-1.5 px-2 hover:bg-indigo-50 hover:outline-none rounded-sm hover:text-indigo-900">

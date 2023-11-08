@@ -37,7 +37,8 @@
     "react-dom": "^18.2.0",
     "remix-auth": "^3.6.0",
     "remix-auth-form": "^1.4.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zodix": "^0.4.4"
   },
   "devDependencies": {
     "@iconify-json/radix-icons": "^1.1.11",

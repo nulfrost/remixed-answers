@@ -4,12 +4,16 @@ import { Icon } from "~/components/Icon";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { Button } from "~/components/Button";
+import { formatDistanceToNow } from "date-fns";
 
 interface QuestionProps {
-  author: string;
-  image: string;
-  category: string;
-  created_at: string;
+  author: {
+    username: string;
+  };
+  category: {
+    name: string | null;
+  };
+  created_at: string | null;
   title: string;
   body?: string;
 }
@@ -20,26 +24,34 @@ export default function Question(props: QuestionProps) {
   return (
     <header className="border border-gray-200 px-8 py-6 rounded-md mb-4 bg-white">
       <div className="flex flex-col">
-        <h1 className="text-2xl font-bold mb-4 order-1">
-          Can wall tiles be used on floors?
+        <h1
+          className={`text-2xl font-bold order-1 ${props.body ? "" : "mb-4"}`}
+        >
+          {props.title}
         </h1>
         <div className="flex items-center gap-2 mb-2 order-0">
           <UserAvatar className="h-12 w-12" initial="D" />
           <div>
-            <span className="font-semibold">Dane</span>
-            <p className="text-sm text-gray-500">
+            <span className="font-semibold">{props.author.username}</span>
+            <span className="text-sm text-gray-500 block">
               asked in{" "}
               <Link
                 to="#"
                 className="text-blue-500 hover:text-blue-600 hover:underline"
               >
-                science
+                {props.category.name}
               </Link>{" "}
-              &middot; 2 days ago
-            </p>
+              &middot;{" "}
+              <time dateTime={props.created_at.toString()}>
+                {formatDistanceToNow(new Date(props.created_at as string), {
+                  addSuffix: true,
+                })}
+              </time>
+            </span>
           </div>
         </div>
       </div>
+      {props.body ? <p className="mb-4">{props.body}</p> : null}
       <div className="flex gap-3">
         <button
           type="button"
@@ -63,15 +75,15 @@ export default function Question(props: QuestionProps) {
         <Dialog.Portal>
           <Dialog.Overlay className="bg-black/25 fixed inset-0" />
           <Dialog.Content className="fixed px-4 py-4 top-[30%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none border border-gray-300">
-            <div className="">
+            <div>
               <Dialog.Title asChild>
-                <h2 className="font-bold text-lg">
-                  Can wall tiles be used on floors?
-                </h2>
+                <h2 className="font-bold text-lg">{props.title}</h2>
               </Dialog.Title>
-              <Dialog.Description className="text-gray-500">
-                pls respond
-              </Dialog.Description>
+              {props.body ? (
+                <Dialog.Description className="text-gray-500">
+                  {props.body}
+                </Dialog.Description>
+              ) : null}
             </div>
             <div className="border border-gray-200 w-full mb-4 mt-4"></div>
             <fetcher.Form method="post">

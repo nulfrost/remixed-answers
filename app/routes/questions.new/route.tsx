@@ -6,7 +6,12 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useFormAction,
+  useNavigation,
+} from "@remix-run/react";
 import { useId } from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
@@ -51,12 +56,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function NewQuestion() {
   const lastSubmission = useActionData<typeof action>();
+  const navigation = useNavigation();
+  const formAction = useFormAction();
   const user = useUser();
   const id = useId();
   const [form, { title, body, category }] = useForm({
     id,
     lastSubmission,
   });
+
+  const isSubmitting =
+    navigation.state === "submitting" || navigation.formAction === formAction;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -98,8 +108,17 @@ export default function NewQuestion() {
           className="mb-4"
           name="category"
         />
-        <Button type="submit" className="w-full py-2">
-          Ask Question
+        <Button
+          type="submit"
+          className={`w-full py-2 ${
+            isSubmitting
+              ? "bg-indigo-50 cursor-not-allowed hover:bg-indigo-100"
+              : ""
+          }`}
+        >
+          {isSubmitting
+            ? "Sending your question to the experts.."
+            : "Ask Question"}
         </Button>
       </Form>
     </div>

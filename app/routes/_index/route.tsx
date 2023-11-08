@@ -52,7 +52,7 @@ export default function Index() {
       </Form>
       <div className="[&>*]:border [&>*]:border-b-0">
         {questions.map((question) => (
-          <Question {...question} />
+          <Question {...question} key={question.id} />
         ))}
       </div>
     </div>
@@ -60,6 +60,7 @@ export default function Index() {
 }
 
 interface QuestionProps {
+  id: number;
   title: string;
   body: string;
   created_at: string | null;
@@ -73,7 +74,7 @@ function Question(props: QuestionProps) {
     <div className="border-gray-200 p-4 first-of-type:rounded-tr-md first-of-type:rounded-tl-md last-of-type:border-b last-of-type:rounded-br-md last-of-type:rounded-bl-md bg-white">
       <header>
         <h2 className="font-bold mb-2 text-lg">
-          <Link to="#" className="hover:underline">
+          <Link to={`/questions/${props.id}`} className="hover:underline">
             {props.title}
           </Link>
         </h2>

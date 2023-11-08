@@ -17,11 +17,16 @@ export function CategorySelect(props: ComponentProps<"select">) {
         props.className
       )}
     >
-      {categoryFetcher.data?.map((category) => (
-        <option value={category.id} key={category.id}>
-          {category.name}
+      <>
+        <option disabled selected value>
+          Select a category
         </option>
-      ))}
+        {categoryFetcher.data?.map((category) => (
+          <option value={category.id} key={category.id}>
+            {category.name}
+          </option>
+        ))}
+      </>
     </select>
   );
 }

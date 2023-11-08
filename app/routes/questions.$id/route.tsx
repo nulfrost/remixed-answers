@@ -1,21 +1,37 @@
 import QuestionCard from "./Question";
-import { Form, useSubmit, useLocation, useFetcher } from "@remix-run/react";
-import { ChangeEventHandler } from "react";
+import {
+  useSubmit,
+  useLocation,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
+import { ChangeEvent } from "react";
 import { Comment } from "./Comment";
+import { getSingleQuestion } from "./getSingleQuestion";
+import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { zx } from "zodix";
+import { z } from "zod";
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  const { id } = zx.parseParams(params, {
+    id: z.number(),
+  });
+  const question = await getSingleQuestion(id);
+  return json(question);
+}
 
 export default function QuestionSlug() {
   const submit = useSubmit();
   const location = useLocation();
   const fetcher = useFetcher();
+  const question = useLoaderData<typeof loader>();
 
-  function handleCommentSortDirection(
-    event: ChangeEventHandler<HTMLSelectElement>
-  ) {
+  function handleCommentSortDirection(event: ChangeEvent<HTMLSelectElement>) {
     submit((event.currentTarget || event.target).closest("form"));
   }
   return (
     <article>
-      <QuestionCard />
+      <QuestionCard {...question} />
       <section className="mb-4">
         <p className="font-bold text-lg">13 Answers</p>
         <fetcher.Form
