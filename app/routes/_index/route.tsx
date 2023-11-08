@@ -1,4 +1,7 @@
-import { Link, Form, MetaFunction } from "@remix-run/react";
+import { Link, Form, MetaFunction, useLoaderData } from "@remix-run/react";
+import { getAllQuestions } from "./getAllQuestions";
+import { json } from "@remix-run/node";
+import { formatDistanceToNow } from "date-fns";
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,7 +21,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function loader() {
+  const questions = await getAllQuestions();
+  return json({ questions });
+}
+
 export default function Index() {
+  const { questions } = useLoaderData<typeof loader>();
   return (
     <div>
       <h1 className="font-bold text-3xl mb-2">Search</h1>
@@ -42,8 +51,8 @@ export default function Index() {
         </button>
       </Form>
       <div className="[&>*]:border [&>*]:border-b-0">
-        {Array.from({ length: 12 }, (_, index) => (
-          <Question />
+        {questions.map((question) => (
+          <Question {...question} />
         ))}
       </div>
     </div>
@@ -53,9 +62,10 @@ export default function Index() {
 interface QuestionProps {
   title: string;
   body: string;
-  comment_count: number;
-  category: string;
-  created_at: string;
+  created_at: string | null;
+  category: {
+    name: string | null;
+  };
 }
 
 function Question(props: QuestionProps) {
@@ -64,23 +74,27 @@ function Question(props: QuestionProps) {
       <header>
         <h2 className="font-bold mb-2 text-lg">
           <Link to="#" className="hover:underline">
-            some title lol
+            {props.title}
           </Link>
         </h2>
       </header>
-      <p className="text-gray-500 mb-2 text-sm">
-        can we make sure that the earth is actually flat and rotating? I have my
-        suspicions!
-      </p>
+      {props.body ? (
+        <p className="text-gray-500 mb-2 text-sm">{props.body}</p>
+      ) : null}
       <footer className="text-xs text-gray-500">
         <span>5 comments</span> &middot;{" "}
         <Link
           to="#"
           className="text-blue-500 hover:underline hover:text-blue-600 duration-150"
         >
-          Science
+          {props.category.name}
         </Link>{" "}
-        &middot; <span>2 Weeks Ago</span>
+        &middot;{" "}
+        <time dateTime={props.created_at?.toString()}>
+          {formatDistanceToNow(new Date(props.created_at as string), {
+            addSuffix: true,
+          })}
+        </time>
       </footer>
     </div>
   );

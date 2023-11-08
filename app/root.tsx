@@ -57,38 +57,46 @@ function Navbar(props: NavbarProps | null) {
       <Link to="/" className="font-bold" aria-label="Go to search page">
         Remixed Answers
       </Link>
-      <div>
+      <div className="flex items-center gap-4">
         {props.user ? (
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger className="">
-              <UserAvatar initial="D" className="h-10 w-10" />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content className="bg-white border border-gray-300 w-[200px] mt-2 rounded-md px-2 py-1.5">
-                <DropdownMenu.Item
-                  disabled
-                  className="text-gray-400 text-sm py-1.5"
-                >
-                  <span className="px-2">{props.user.username}</span>
-                </DropdownMenu.Item>
-                <DropdownMenu.Separator className="h-[1px] bg-gray-200 m-[5px]" />
-                <DropdownMenu.Item className="text-gray-400 text-sm py-1.5 px-2 hover:bg-indigo-50 hover:outline-none rounded-sm hover:text-indigo-900">
-                  <button
-                    className="w-full text-left"
-                    onClick={() =>
-                      submit(null, {
-                        method: "POST",
-                        action: "/logout",
-                        replace: true,
-                      })
-                    }
+          <>
+            <Link
+              to="/questions/new"
+              className="hover:underline font-bold text-indigo-500 hover:text-indigo-600"
+            >
+              ask a question
+            </Link>
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className="">
+                <UserAvatar initial="D" className="h-10 w-10" />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className="bg-white border border-gray-300 w-[200px] mt-2 rounded-md px-2 py-1.5">
+                  <DropdownMenu.Item
+                    disabled
+                    className="text-gray-400 text-sm py-1.5"
                   >
-                    Logout
-                  </button>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
+                    <span className="px-2">{props.user.username}</span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="h-[1px] bg-gray-200 m-[5px]" />
+                  <DropdownMenu.Item className="text-gray-400 text-sm py-1.5 px-2 hover:bg-indigo-50 hover:outline-none rounded-sm hover:text-indigo-900">
+                    <button
+                      className="w-full text-left"
+                      onClick={() =>
+                        submit(null, {
+                          method: "POST",
+                          action: "/logout",
+                          replace: true,
+                        })
+                      }
+                    >
+                      Logout
+                    </button>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          </>
         ) : (
           <Link
             to="/login"

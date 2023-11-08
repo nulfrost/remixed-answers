@@ -128,7 +128,7 @@ export default function Login() {
           <Button
             className={`w-full py-2 ${
               isSubmitting
-                ? "bg-indigo-200 cursor-not-allowed hover:bg-indigo-200"
+                ? "bg-indigo-100 cursor-not-allowed hover:bg-indigo-100"
                 : ""
             }`}
             disabled={isSubmitting}
