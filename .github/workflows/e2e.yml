@@ -48,3 +48,5 @@ jobs:
         run: pnpm db:seed
       - name: Run Playwright tests
         run: pnpm dlx playwright test
+        env:
+          DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
