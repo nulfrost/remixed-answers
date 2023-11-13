@@ -1,0 +1,50 @@
+name: E2E
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: remixedanswersdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Is it running?
+        run: docker container ls
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
+      - name: Push DB changes
+        run: pnpm db:push
+        env:
+          DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
+      - name: Seed database
+        run: pnpm db:seed
+      - name: Run Playwright tests
+        run: pnpm dlx playwright test

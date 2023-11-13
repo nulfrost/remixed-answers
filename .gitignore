@@ -5,3 +5,7 @@ node_modules
 /public/build
 .env
 /app/icons/names.ts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

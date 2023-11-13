@@ -1,0 +1,11 @@
+version: "3.1"
+
+services:
+  rmxanstest:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: remixanswersdb
+    ports:
+      - 5432:5432

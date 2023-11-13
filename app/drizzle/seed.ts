@@ -4,7 +4,7 @@ import { sql } from "drizzle-orm";
 import postgres from "postgres";
 
 const queryClient = postgres(
-  "postgres://postgres:password@0.0.0.0:5432/remixedanswersdb"
+  "postgres://postgres:password@localhost:5432/remixedanswersdb"
 );
 export const db = drizzle(queryClient);
 
