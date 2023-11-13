@@ -9,11 +9,13 @@ on:
 
 jobs:
   runner-job:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres
         env:
+          POSTGRES_HOST: localhost
           POSTGRES_PASSWORD: password
           POSTGRES_DB: remixedanswersdb
         options: >-
@@ -26,10 +28,6 @@ jobs:
     steps:
       - name: Is it running?
         run: docker container ls
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
