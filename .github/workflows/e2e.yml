@@ -10,9 +10,12 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+env:
+  DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
+  SESSION_SECRET: $(openssl rand -base64 32)
 
 jobs:
-  runner-job:
+  test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     services:
@@ -30,8 +33,6 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Is it running?
-        run: docker container ls
       - uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v1
         with:
@@ -45,11 +46,7 @@ jobs:
         run: bunx playwright install --with-deps
       - name: Push DB changes
         run: bun db:push
-        env:
-          DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
       - name: Seed database
         run: bun db:seed
       - name: Run Playwright tests
         run: bunx playwright test
-        env:
-          DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
