@@ -33,24 +33,23 @@ jobs:
       - name: Is it running?
         run: docker container ls
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: oven-sh/setup-bun@v1
         with:
-          version: 8
+          bun-version: latest
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install
       - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
+        run: bunx playwright install --with-deps
       - name: Push DB changes
-        run: pnpm db:push
+        run: bun db:push
         env:
           DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
       - name: Seed database
-        run: pnpm db:seed
+        run: bun db:seed
       - name: Run Playwright tests
-        run: pnpm dlx playwright test
+        run: bunx playwright test
         env:
           DATABASE_URL: postgres://postgres:password@0.0.0.0:5432/remixedanswersdb
