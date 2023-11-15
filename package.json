@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build && vite build --ssr",
-    "dev": "bunx --bun vite",
+    "dev": "vite dev",
     "start": "remix-serve ./build/index.js",
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
