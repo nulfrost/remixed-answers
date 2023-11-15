@@ -1,6 +1,0 @@
-.env
-node_modules
-.gitignore
-env.d.ts
-.prettierrc
-sly.json
