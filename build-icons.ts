@@ -51,7 +51,7 @@ async function generateSvgSprite({
       svg.removeAttribute("width");
       svg.removeAttribute("height");
       return svg.toString().trim();
-    })
+    }),
   );
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,

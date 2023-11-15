@@ -62,7 +62,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const toast = session.get("toast") || null;
   return json(
     { toast },
-    { headers: { "Set-Cookie": await commitSession(session) } }
+    { headers: { "Set-Cookie": await commitSession(session) } },
   );
 }
 

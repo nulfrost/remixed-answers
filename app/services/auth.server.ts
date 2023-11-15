@@ -26,7 +26,7 @@ authenticator.use(
 
     return user;
   }),
-  "form"
+  "form",
 );
 
 async function verifyLogin(username: string, password: string) {

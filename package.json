@@ -13,7 +13,7 @@
     "e2e": "pnpm exec playwright test",
     "icons": "ts-node-esm build-icons.ts",
     "typecheck": "tsc",
-    "format": "bun prettier --write"
+    "format": "bunx prettier --write **/*.{js,ts}"
   },
   "dependencies": {
     "@conform-to/react": "^0.9.0",

@@ -1,7 +1,7 @@
 version: "3.1"
 
 services:
-  rmxanstest:
+  remixanswers:
     image: postgres:latest
     restart: always
     environment:

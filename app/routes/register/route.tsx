@@ -43,7 +43,7 @@ function createRegisterSchema(
   constraint?: {
     isEmailUnique?: (email: string) => Promise<boolean>;
     isUsernameUnique?: (username: string) => Promise<boolean>;
-  }
+  },
 ) {
   return z
     .object({
@@ -57,8 +57,8 @@ function createRegisterSchema(
               validate: () => constraint?.isUsernameUnique?.(username),
               when: intent === "submit" || intent === "validate/username",
               message: "User with this username already exists",
-            })
-          )
+            }),
+          ),
         ),
       email: z
         .string({ required_error: "Please enter an e-mail" })
@@ -69,8 +69,8 @@ function createRegisterSchema(
               validate: () => constraint?.isEmailUnique?.(email),
               when: intent === "submit" || intent === "validate/email",
               message: "User with this e-mail already exists",
-            })
-          )
+            }),
+          ),
         ),
       password: z
         .string({ required_error: "Please enter a password" })
