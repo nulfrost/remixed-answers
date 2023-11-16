@@ -1,10 +1,10 @@
+import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
-import { sessionStorage } from "~/services/session.server";
-import { users } from "~/drizzle/schema.server";
 import { db } from "~/drizzle/config.server";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
+import { users } from "~/drizzle/schema.server";
+import { sessionStorage } from "~/services/session.server";
 
 type User = Omit<
   typeof users.$inferInsert,

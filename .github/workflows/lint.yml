@@ -28,3 +28,5 @@ jobs:
         run: bun typecheck
       - name: Format
         run: bun format
+      - name: Organize imports
+        run: bunx organize-imports-cli app/**/*.ts

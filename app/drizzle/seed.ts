@@ -1,7 +1,7 @@
-import { categories } from "./schema.server.ts";
-import { drizzle } from "drizzle-orm/postgres-js";
 import { sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import { categories } from "./schema.server.ts";
 
 const queryClient = postgres(
   "postgres://postgres:password@localhost:5432/remixedanswersdb",

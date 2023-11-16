@@ -1,5 +1,5 @@
-import { db } from "~/drizzle/config.server";
 import { eq } from "drizzle-orm";
+import { db } from "~/drizzle/config.server";
 import { questions } from "~/drizzle/schema.server";
 
 export async function getSingleQuestion(id: number) {

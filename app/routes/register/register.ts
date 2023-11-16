@@ -1,7 +1,7 @@
+import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
 import { db } from "~/drizzle/config.server";
 import { users } from "~/drizzle/schema.server";
-import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 
 async function hashPassword(password: string) {
   return bcrypt.hash(password, 15);
