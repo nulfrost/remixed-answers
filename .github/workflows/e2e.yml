@@ -1,6 +1,11 @@
 name: E2E
 on:
-   workflow_call:
+   pull_request:
+      branches:
+         - main
+   push:
+      branches:
+         - main
 
 concurrency:
    group: ${{ github.workflow }}-${{ github.ref }}
