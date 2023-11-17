@@ -25,6 +25,7 @@ import {
 } from "./register";
 import { authenticate } from "~/services/auth.server";
 import { commitSession, getSession } from "~/services/session.server";
+import { useId } from "react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -128,7 +129,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Register() {
   const lastSubmission = useActionData<typeof action>();
+  const id = useId()
   const [form, { username, password, confirmPassword, email }] = useForm({
+    id,
     lastSubmission,
   });
 
@@ -137,6 +140,8 @@ export default function Register() {
 
   const isSubmitting =
     navigation.state === "submitting" || navigation.formAction === formAction;
+
+    console.log({confirmPassword, email})
 
   return (
     <div className="max-w-sm mx-auto pt-2">
@@ -177,8 +182,8 @@ export default function Register() {
           </span>
         </span>
         <label
-          htmlFor="username"
-          id="usernameLabel"
+          htmlFor="email"
+          id="emailLabel"
           className="text-gray-500 block mb-1"
         >
           E-mail (required)
@@ -195,7 +200,7 @@ export default function Register() {
           aria-required
           aria-invalid={email.error ? "true" : undefined}
           aria-describedby={email.error ? `${email.id}-error` : undefined}
-          aria-labelledby="usernameLabel usernameDesc"
+          aria-labelledby="emailLabel"
         />
         <label
           htmlFor="password"
