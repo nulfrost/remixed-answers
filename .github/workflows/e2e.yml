@@ -49,4 +49,4 @@ jobs:
          - name: Seed database
            run: bun db:seed
          - name: Run Playwright tests
-           run: bunx playwright test
+           run: bun e2e
