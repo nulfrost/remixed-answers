@@ -30,3 +30,9 @@ jobs:
         run: bun format
       - name: Organize imports
         run: bunx organize-imports-cli app/**/*.ts
+  e2e:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: E2E
+        uses: ./.github/workflows/e2e.yml
