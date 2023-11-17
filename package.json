@@ -10,7 +10,7 @@
     "db:push": "drizzle-kit push:pg",
     "db:generate": "drizzle-kit generate:pg",
     "db:seed": "ts-node-esm ./app/drizzle/seed.ts",
-    "e2e": "pnpm exec playwright test",
+    "e2e": "bunx playwright test",
     "icons": "ts-node-esm build-icons.ts",
     "typecheck": "tsc",
     "format": "bunx prettier --write **/*.{js,ts}"
